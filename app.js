@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');//セッションパッケージをロード
 
-var indexRouter = require('./routes/index');//indexファイルをロードして、app.jsで書かれたのと同じ働きになる
+//各jsと同じ働きになる
+var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var helloRouter = require('./routes/hello');
 

@@ -18,19 +18,24 @@
 
   <div role="main">
     <p><%- content %></p>
+
     <form  method="post" action="/hello/add">
+      <!-- NAME -->
       <div class="form-group">
         <label for="name">NAME</label>
-        <input type="text" name="name" id="name" class="form-control">
+        <input type="text" name="name" id="name" value="<%= form.name  %>"  class="form-control">
       </div>
+      <!-- mail -->
       <div class="form-group">
         <label for="mail">MAIL</label>
-        <input type="text" name="mail" id="mail" class="form-control">
+        <td><input type="text" name="mail" id="mail" value="<%= form.mail %>" class="form-control"></td>
       </div>
+      <!-- AGE -->
       <div class="form-group">
         <label for="age">AGE</label>
-        <input type="text" name="age" id="age" class="form-control">
+        <td><input type="text" name="age" id="age" value="<%= form.age %>"  class="form-control"></td>
       </div>
+      <!-- submit btn -->
       <input type="submit" value="作成" class="btn btn-primary">
       
     </form>
