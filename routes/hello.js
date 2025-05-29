@@ -46,12 +46,14 @@ router.get("/add", (req,res,next) => {
 });
 // add実行
 router.post('/add', [
-    check('name', 'NAME は必ず入力してください。').notEmpty(),
-    check('mail', 'MAIL はメールアドレスを記入してください。').isEmail(),
-    check('age', 'AGE は年齢（整数）を入力してください。').isInt(),    
+    check('name', 'NAME は必ず入力してください。').notEmpty().escape(),
+    check('mail', 'MAIL はメールアドレスを記入してください。').isEmail().escape(),
+    check('age', 'AGE は年齢（整数）を入力してください。').isInt(),
+    check('age', 'AGE は0以上120以下で入力してください。').custom( (value) =>{ return value >= 0 && value <= 120; 
+    })    
   ] ,(req, res,next) => {
     const errors = validationResult(req);
-
+    //もしエラーがあればエラーメッセージの表示と値をそのまま返す。
     if(!errors.isEmpty()){
       var result = '<ul class="text-danger">';
         var result_arr = errors.array();
@@ -62,10 +64,10 @@ router.post('/add', [
       var data = {
         title: 'hello/Add',
         content: result,
-        form: req.body,
+        form: req.body,//値をそのまま返すことで使用感up
       }
       res.render("hello/add", data);
-    } else {
+    } else {//エラーがなければ変更処理
         const nm = req.body.name;
         const ml = req.body.mail;
         const ag = req.body.age;

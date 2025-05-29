@@ -32,7 +32,7 @@ var session_opt = {
 app.use( session (session_opt));
 
 
-//ロードしたルーターファイルにアドレスを割り当てる。
+//ロードしたルーターejsファイルにjsアドレスを割り当てる。
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/hello', helloRouter);

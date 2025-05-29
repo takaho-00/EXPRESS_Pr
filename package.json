@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@prisma/client": "^6.8.2",
     "cookie-parser": "~1.4.6",
     "debug": "~4.3.4",
     "ejs": "~3.1.9",
@@ -16,5 +17,8 @@
     "morgan": "~1.10.0",
     "sqlite3": "^5.1.7",
     "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.8.2"
   }
 }
