@@ -8,32 +8,34 @@ const { get } = require('./users');
 const { route } = require('./users');
 const prisma = new ps.PrismaClient();
 
+//ミドルウェア　アクセスがあれば必ず動くので注意が必要
+var lastCursor = 0;
+var cursor = 1;
+prisma.$use(async (params, next) => {
+  const result= await next(params);//paramsとして入ったモデルへの作業を実行
+  cursor = result[result.length - 1].id;//カーソルを更新（元々1→3→5）常に３つだが、クエリで取得される範囲が毎回変わるから、resultも変わる。
+  if( cursor == lastCursor){
+    cursor = 1;
+  }
+  lastCursor = cursor; //最後のカーソルを記憶（表示されるデータが最後の1つになったら最初に戻るようにしている。）
+  return result;
+});
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
-  const id = +req.query.id;
-  if (!id) {
-    //idがクエリ文にない時
-   prisma.user.findMany().then( (users) => {
-      const data = {
-        title: 'Users/index',
-        content: users,
+  prisma.user.findMany({
+    orderBy: [{id:'asc'}],
+    cursor: {id:cursor},
+    take:3,
+  }).then( users => {
+    const data = {
+        title: 'users/index',
+        content: users
       }
       res.render('users/index', data);
     });
-  } else {
-    //idがクエリ文にあるとき
-    prisma.user.findMany({
-      where: { id: { lte: id }  }
-    }).then( (usrs) => {
-      var data = {
-        title: 'Users/index',
-        content: usrs,
-      }
-      res.render('users/index', data);
-    });
-  }
 });
+
 
 /* GET find listing. */
 router.get('/find', (req, res, next) => {
@@ -142,5 +144,26 @@ router.post('/edit', (req,res,next) => {
   });
 });
 
+// GET delete listening
+router.get('/delete/:id', (req, res, next) => {
+  const id = req.params.id;
+  prisma.user.findUnique(
+    {where: { id: +id}}
+  ).then( usr => {
+    const data = {
+      title: 'Users/Delete',
+      user: usr
+    }
+    res.render('users/delete', data)
+  });
+});
+
+router.post('/delete',(req , res, next) => {
+  prisma.User.delete({
+    where:{id:+req.body.id}
+  }).then(() => {
+    res.redirect('/users');
+  });
+});
 
 module.exports = router;
